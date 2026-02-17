@@ -10,7 +10,8 @@ const groq = new Groq({
 let extractor = null;
 
 /*
-  Ahora ya tiene contexto por usuario/historial
+  Ya lo implemente, ( Ahora sigue mi flujo de abajo ) 
+  Esto tiene que estar por usuario, actualmente el flujo es systempromt - systemHistory ( no tiene contexto real del historial del usuario, simplemente agarra un contexto global de la charla )
 */
 
 async function getExtractor() {

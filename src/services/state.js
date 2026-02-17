@@ -1,18 +1,16 @@
 const { sql } = require('@vercel/postgres');
 require('dotenv').config();
 
-const { encrypt } = require('../utils/crypto');
+const { encrypt, decrypt } = require('../utils/crypto');
 const { generateEmbedding } = require('./oracle');
 
 /*
 La ia hizo mal su propia function
+volvio a romper su propia funcion
 */
 
-
-async function setMood(score, note = null, isEncrypted = false, userId) {
+async function setMood(score, note = null, isEncrypted = false, userId, iv = null, salt = null) {
     try {
-        // ... (encryption logic remains the same)
-
         let finalNote = note;
         if (!isEncrypted && note) {
             finalNote = encrypt(note);
@@ -29,8 +27,8 @@ async function setMood(score, note = null, isEncrypted = false, userId) {
         }
 
         const result = await sql`
-            INSERT INTO moods (score, note, embedding, user_id) 
-            VALUES (${score}, ${finalNote}, ${embedding}, ${userId})
+            INSERT INTO moods (score, note, embedding, user_id, is_vault, iv, salt) 
+            VALUES (${score}, ${finalNote}, ${embedding}, ${userId}, ${isEncrypted}, ${iv}, ${salt})
         `;
         console.log(`[DB] Mood set to ${score}. Encrypted note saved. Embedding generated: ${!!embedding}`);
         return result;
@@ -98,4 +96,36 @@ async function getLatestSleep(userId) {
     }
 }
 
-module.exports = { setMood, getMood, logSleep, getLatestSleep };
+/*
+La idea de un diario, surge de un comentario que me hicieron
+igualmente tu no quieres a ninguna 
+*/
+
+async function getHistory(userId) {
+    try {
+        const { rows } = await sql`
+            SELECT * FROM moods 
+            WHERE user_id = ${userId}
+            ORDER BY created_at DESC 
+            LIMIT 50
+        `;
+
+        return rows.map(row => {
+            if (row.note && !row.is_vault) {
+                try {
+                    return { ...row, note: decrypt(row.note) };
+                } catch (e) {
+                    console.error(`Failed to decrypt log ${row.id}`, e);
+                    return { ...row, note: "[Decryption Failed]" };
+                }
+            }
+            return row;
+        });
+
+    } catch (error) {
+        console.error('[DB] Error getting history:', error);
+        return [];
+    }
+}
+
+module.exports = { setMood, getMood, logSleep, getLatestSleep, getHistory };

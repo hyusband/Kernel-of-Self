@@ -13,6 +13,7 @@ import { useVault } from '@/hooks/use-vault';
 import { VaultModal } from '@/components/vault/vault-modal';
 import { cn } from '@/lib/utils';
 import { OracleWidget } from '@/components/oracle/oracle-widget';
+import Link from 'next/link';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
@@ -145,6 +146,9 @@ export default function Dashboard() {
           </span>
         </div>
         <div className="flex gap-4 items-center">
+          <Link href="/diary" className="text-sm font-mono text-neutral-400 hover:text-white transition-colors">
+            ARCHIVES
+          </Link>
           <button
             onClick={handleVaultToggle}
             className={cn(

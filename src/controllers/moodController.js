@@ -1,4 +1,4 @@
-const { setMood, getMood: fetchMoodHeader } = require('../services/state');
+const { setMood, getMood: fetchMoodHeader, getHistory: fetchHistory } = require('../services/state');
 
 async function getMood(req, res) {
     try {
@@ -12,8 +12,6 @@ async function getMood(req, res) {
 }
 
 async function updateMood(req, res) {
-    console.log('[DEBUG] Mood Request Headers:', req.headers);
-    console.log('[DEBUG] Mood Request Body:', req.body);
     const body = req.body || {};
     const score = body.score || req.query.score;
     const note = body.note || req.query.note;
@@ -35,7 +33,10 @@ async function updateMood(req, res) {
 
     const isEncrypted = body.is_encrypted || false;
     const userId = req.user.id;
-    await setMood(numScore, note, isEncrypted, userId);
+    const iv = body.iv || null;
+    const salt = body.salt || null;
+
+    await setMood(numScore, note, isEncrypted, userId, iv, salt);
 
     let feedback = "";
     if (numScore <= 4) feedback = res.__('mood.recovery');
@@ -49,4 +50,15 @@ async function updateMood(req, res) {
     });
 }
 
-module.exports = { updateMood, getMood };
+async function getHistory(req, res) {
+    try {
+        const userId = req.user.id;
+        const history = await fetchHistory(userId);
+        res.json(history);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Failed to fetch history" });
+    }
+}
+
+module.exports = { updateMood, getMood, getHistory };
