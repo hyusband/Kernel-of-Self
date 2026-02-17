@@ -63,6 +63,14 @@ Trigger a manual synchronization (notification test):
 curl http://localhost:3000/api/wakeup
 ```
 
+### 4. Mood Tracker (New)
+Tell the Kernel how you feel (1-10) to adapt the next message:
+```bash
+curl "http://localhost:3000/api/mood?score=3"
+
+curl "http://localhost:3000/api/mood?score=9"
+```
+
 ---
 
 ## ☁️ Deployment
