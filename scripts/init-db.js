@@ -9,6 +9,7 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS moods (
                 id SERIAL PRIMARY KEY,
                 score INTEGER NOT NULL CHECK (score >= 1 AND score <= 10),
+                note TEXT,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `;

@@ -1,7 +1,8 @@
 const { setMood } = require('../services/state');
 
 async function updateMood(req, res) {
-    const { score } = req.query;
+    const score = req.body.score || req.query.score;
+    const note = req.body.note || req.query.note;
 
     if (!score || isNaN(score)) {
         return res.status(400).json({
@@ -18,7 +19,7 @@ async function updateMood(req, res) {
         });
     }
 
-    await setMood(numScore);
+    await setMood(numScore, note);
 
     let feedback = "";
     if (numScore <= 4) feedback = res.__('mood.recovery');

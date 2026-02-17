@@ -1,13 +1,17 @@
 const { sql } = require('@vercel/postgres');
 require('dotenv').config();
 
-async function setMood(score) {
+const { encrypt } = require('../utils/crypto');
+
+async function setMood(score, note = null) {
     try {
+        const encryptedNote = note ? encrypt(note) : null;
+
         const result = await sql`
-            INSERT INTO moods (score) 
-            VALUES (${score})
+            INSERT INTO moods (score, note) 
+            VALUES (${score}, ${encryptedNote})
         `;
-        console.log(`[DB] Mood set to ${score}.`);
+        console.log(`[DB] Mood set to ${score}. Encrypted note saved.`);
         return result;
     } catch (error) {
         console.error('[DB] Error setting mood:', error);
