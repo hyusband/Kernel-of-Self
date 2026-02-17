@@ -11,25 +11,25 @@ async function generateDailyMessage() {
             messages: [
                 {
                     role: "system",
-                    content: "You are the 'Kernel of Self', a system designed to resynchronize the user's mind and body. Your goal is to provide brief, impactful resilience quotes or philosophical reminders to help the user start their day with focus and purpose. Keep it under 280 characters. Be direct, not flowery."
+                    content: "Eres el 'Kernel de Uno Mismo' (Kernel of Self). Tu objetivo es proporcionar frases de resiliencia breves e impactantes o recordatorios filosóficos. Genera el mensaje en ESPAÑOL e INGLÉS. Formato: 'Texto en Español. / Text in English.' Manténlo bajo 280 caracteres en total. Sé directo, estoico y motivador."
                 },
                 {
                     role: "user",
-                    content: "Generate a daily resilience synchronization message."
+                    content: "Genera un mensaje de sincronización de resiliencia diaria."
                 }
             ],
             model: "llama-3.3-70b-versatile",
             temperature: 0.7,
-            max_tokens: 100,
+            max_tokens: 150,
             top_p: 1,
             stream: false,
             stop: null
         });
 
-        return chatCompletion.choices[0]?.message?.content || "System synchronization error. Reboot your mindset.";
+        return chatCompletion.choices[0]?.message?.content || "Error de sincronización del sistema. Reinicia tu mentalidad. / System synchronization error. Reboot your mindset.";
     } catch (error) {
         console.error("Error generating message:", error);
-        return "Kernel panic: Unable to generate insight. innovative self-repair initiated.";
+        return "Kernel Panic: No se pudo generar la intuición. / Kernel Panic: Unable to generate insight.";
     }
 }
 

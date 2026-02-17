@@ -22,6 +22,7 @@ This project uses a lightweight, high-performance stack designed for minimal cog
 |-----------|------------|------|
 | **Core** | `Node.js` + `Express` | You already speak this language. Zero learning curve. |
 | **Intelligence** | `Groq SDK` | Near-instant inference for generating daily wisdom. |
+| **Languages** | `ES/EN` | Dual-language output (Spanish/English) for universal resilience. |
 | **Alerts** | `ntfy.sh` | Simple HTTP-based push notifications. No complex Firebase setup. |
 | **Automation** | `Vercel Cron` | Serverless scheduling. It wakes up so you don't have to. |
 
