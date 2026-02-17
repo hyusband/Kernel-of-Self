@@ -18,7 +18,7 @@ async function updateMood(req, res) {
         });
     }
 
-    setMood(numScore);
+    await setMood(numScore);
 
     let feedback = "";
     if (numScore <= 4) feedback = res.__('mood.recovery');

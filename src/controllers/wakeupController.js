@@ -6,7 +6,7 @@ async function triggerWakeup(req, res) {
     try {
         console.log(res.__('wakeup.sync_start'));
 
-        const currentMood = getMood();
+        const currentMood = await getMood();
         console.log(res.__('wakeup.context_mood', currentMood.score ? currentMood.score : 'Neutral'));
 
         const message = await generateDailyMessage(currentMood.score ? currentMood : null);
