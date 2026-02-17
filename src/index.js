@@ -11,8 +11,12 @@ app.use(express.json());
 app.use(i18n.init);
 app.use(requestLogger);
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
-    res.send(res.__('system.active'));
+    res.sendFile('index.html', { root: 'public' }, (err) => {
+        if (err) res.send(res.__('system.active'));
+    });
 });
 
 app.use('/api', apiRoutes);
