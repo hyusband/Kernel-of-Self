@@ -24,7 +24,7 @@ This project uses a lightweight, high-performance stack designed for minimal cog
 | **Intelligence** | `Groq SDK` | Near-instant inference for generating daily wisdom. |
 | **Languages** | `ES/EN` | Dual-language output (Spanish/English) for universal resilience. |
 | **Alerts** | `ntfy.sh` | Simple HTTP-based push notifications. No complex Firebase setup. |
-| **Automation** | `Vercel Cron` | Serverless scheduling. It wakes up so you don't have to. |
+| **Automation** | `Vercel Cron` | Serverless scheduling. Runs every 3 hours to keep you synchronized. |
 
 ---
 
@@ -72,7 +72,7 @@ Deploy seamlessly to **Vercel**:
 1.  Push to GitHub.
 2.  Import project into Vercel.
 3.  Add Environment Variables in Vercel.
-4.  **Done.** The `vercel.json` automatically schedules the daily wake-up call at **8:00 AM**.
+4.  **Done.** The `vercel.json` automatically schedules the wake-up call **every 3 hours**.
 
 ---
 
