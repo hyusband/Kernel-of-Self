@@ -12,6 +12,7 @@ import { useLanguage } from '@/lib/i18n-context';
 import { useVault } from '@/hooks/use-vault';
 import { VaultModal } from '@/components/vault/vault-modal';
 import { cn } from '@/lib/utils';
+import { OracleWidget } from '@/components/oracle/oracle-widget';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -105,6 +106,8 @@ export default function Dashboard() {
         onUnlock={handleVaultUnlock}
         isUnlocked={isUnlocked}
       />
+
+      <OracleWidget />
 
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-6 lg:px-12 transition-all duration-300">

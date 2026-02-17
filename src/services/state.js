@@ -2,16 +2,30 @@ const { sql } = require('@vercel/postgres');
 require('dotenv').config();
 
 const { encrypt } = require('../utils/crypto');
+const { generateEmbedding } = require('./oracle');
 
 async function setMood(score, note = null) {
     try {
         const encryptedNote = note ? encrypt(note) : null;
 
+        // Generate embedding for "public" notes (not encrypted ones, or decrypt first?)
+        // If note is encrypted client-side (Vault), we can't embed it server-side.
+        // For standard logs (plaintext note), we embed it.
+        let embedding = null;
+        if (note && !note.startsWith('{"iv":')) {
+            try {
+                const vector = await generateEmbedding(`Mood: ${score}. Note: ${note}`);
+                embedding = JSON.stringify(vector);
+            } catch (e) {
+                console.error('Embedding generation failed:', e);
+            }
+        }
+
         const result = await sql`
-            INSERT INTO moods (score, note) 
-            VALUES (${score}, ${encryptedNote})
+            INSERT INTO moods (score, note, embedding) 
+            VALUES (${score}, ${encryptedNote}, ${embedding})
         `;
-        console.log(`[DB] Mood set to ${score}. Encrypted note saved.`);
+        console.log(`[DB] Mood set to ${score}. Encrypted note saved. Embedding generated: ${!!embedding}`);
         return result;
     } catch (error) {
         console.error('[DB] Error setting mood:', error);

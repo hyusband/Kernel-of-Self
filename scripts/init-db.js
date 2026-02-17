@@ -5,11 +5,15 @@ async function initDB() {
     try {
         console.log('Initializing database schema...');
 
+        await sql`CREATE EXTENSION IF NOT EXISTS vector;`;
+        console.log('Extension "vector" enabled.');
+
         const result1 = await sql`
             CREATE TABLE IF NOT EXISTS moods (
                 id SERIAL PRIMARY KEY,
                 score INTEGER NOT NULL CHECK (score >= 1 AND score <= 10),
                 note TEXT,
+                embedding vector(384),
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `;
