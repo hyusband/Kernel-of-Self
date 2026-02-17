@@ -40,5 +40,27 @@ export default {
     },
     diary: {
         title: "Neural Archives",
+        desc: "Chronological storage of cognitive states.",
+        error: "Failed to load history.",
+        loading: "Loading diary...",
+        encrypted: "ENCRYPTED CONTENT // CLICK TO DECRYPT",
+        no_notes: "No introspection recorded.",
+        analysis: {
+            title: "Cognitive Analysis",
+            resilience: "RESILIENCE",
+            truth: "LIE DETECTOR",
+            analyze: "ANALYZE",
+            unlock_vault: "Unlock Vault entries to include them in the analysis.",
+            failed: "Analysis failed."
+        },
+        sleep: {
+            title: "Sleep Metrics",
+            history_limit: "Last 30 Sessions",
+            no_data: "Not enough sleep logs yet.",
+            quality_opt: "Optimum Rest",
+            quality_reg: "Regular",
+            quality_def: "Deficient",
+            loading: "Loading stats..."
+        }
     }
 };

@@ -128,4 +128,19 @@ async function getHistory(userId) {
     }
 }
 
-module.exports = { setMood, getMood, logSleep, getLatestSleep, getHistory };
+async function getSleepHistory(userId) {
+    try {
+        const { rows } = await sql`
+            SELECT * FROM sleep_logs 
+            WHERE user_id = ${userId}
+            ORDER BY created_at ASC 
+            LIMIT 30
+        `;
+        return rows;
+    } catch (error) {
+        console.error('[DB] Error getting sleep history:', error);
+        return [];
+    }
+}
+
+module.exports = { setMood, getMood, logSleep, getLatestSleep, getHistory, getSleepHistory };

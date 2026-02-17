@@ -40,5 +40,27 @@ export default {
     },
     diary: {
         title: "Archivos Neuronales",
+        desc: "Almacenamiento cronológico de estados cognitivos.",
+        error: "Error al cargar el historial.",
+        loading: "Cargando archivo...",
+        encrypted: "CONTENIDO ENCRIPTADO // CLICK PARA DESBLOQUEAR",
+        no_notes: "Sin introspección registrada.",
+        analysis: {
+            title: "Análisis Cognitivo",
+            resilience: "RESILIENCIA",
+            truth: "DETECTOR DE MENTIRAS",
+            analyze: "ANALIZAR",
+            unlock_vault: "Desbloquea entradas del Vault para incluirlas en el análisis.",
+            failed: "Análisis fallido."
+        },
+        sleep: {
+            title: "Métricas de Sueño",
+            history_limit: "Últimas 30 Sesiones",
+            no_data: "No hay registros de sueño suficientes.",
+            quality_opt: "Reposo Óptimo",
+            quality_reg: "Regular",
+            quality_def: "Deficiente",
+            loading: "Cargando estadísticas..."
+        }
     }
 };

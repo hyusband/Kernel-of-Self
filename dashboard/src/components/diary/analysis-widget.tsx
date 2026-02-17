@@ -80,7 +80,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                 <h3 className="text-xl font-heading font-bold flex items-center gap-2 text-white">
                     <BrainCircuit className="w-5 h-5 text-purple-400" />
-                    {language === 'es' ? 'Análisis Cognitivo' : 'Cognitive Analysis'}
+                    {t('diary.analysis.title')}
                 </h3>
 
                 <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
                                 mode === 'resilience' ? "bg-neutral-800 text-purple-400" : "text-neutral-500 hover:text-neutral-300"
                             )}
                         >
-                            {language === 'es' ? 'RESILIENCIA' : 'RESILIENCE'}
+                            {t('diary.analysis.resilience')}
                         </button>
                         <button
                             onClick={() => setMode('truth')}
@@ -101,7 +101,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
                                 mode === 'truth' ? "bg-red-900/30 text-red-500" : "text-neutral-500 hover:text-neutral-300"
                             )}
                         >
-                            {language === 'es' ? 'DETECTOR DE MENTIRAS' : 'LIE DETECTOR'}
+                            {t('diary.analysis.truth')}
                         </button>
                     </div>
 
@@ -115,7 +115,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
                         )}
                     >
                         {isLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                        {language === 'es' ? 'ANALIZAR' : 'ANALYZE'}
+                        {t('diary.analysis.analyze')}
                     </button>
                 </div>
             </div>
@@ -132,9 +132,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
 
             {!analysis && !isLoading && (
                 <p className="text-sm text-neutral-500 font-mono italic">
-                    {language === 'es'
-                        ? "Desbloquea entradas del Vault para incluirlas en el análisis."
-                        : "Unlock Vault entries to include them in the analysis."}
+                    {t('diary.analysis.unlock_vault')}
                 </p>
             )}
         </div>

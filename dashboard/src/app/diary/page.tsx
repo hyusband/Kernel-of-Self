@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { BlurFade } from '@/components/ui/blur-fade';
 import { MoodComposer } from '@/components/diary/mood-composer';
 import { AnalysisWidget } from '@/components/diary/analysis-widget';
+import { SleepChart } from '@/components/diary/sleep-chart';
 
 const fetcher = ([url, token]: [string, string]) =>
     axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
@@ -57,8 +58,8 @@ export default function DiaryPage() {
         mutate();
     };
 
-    if (error) return <div className="text-red-500 p-8">Failed to load history.</div>;
-    if (!history) return <div className="text-white p-8">Loading diary...</div>;
+    if (error) return <div className="text-red-500 p-8">{t('diary.error')}</div>;
+    if (!history) return <div className="text-white p-8">{t('diary.loading')}</div>;
 
     return (
         <div className="min-h-screen bg-black text-white p-6 pt-24 max-w-4xl mx-auto">
@@ -72,9 +73,9 @@ export default function DiaryPage() {
             <header className="mb-12">
                 <h1 className="text-4xl font-bold font-heading tracking-tight mb-2 flex items-center gap-3">
                     <Calendar className="w-8 h-8 text-neutral-500" />
-                    {t('diary.title') || "Neural Archives"}
+                    {t('diary.title')}
                 </h1>
-                <p className="text-neutral-400">Chronological storage of cognitive states.</p>
+                <p className="text-neutral-400">{t('diary.desc')}</p>
             </header>
 
             <div className="mb-12">
@@ -85,6 +86,10 @@ export default function DiaryPage() {
 
             <BlurFade delay={0.15}>
                 <AnalysisWidget history={history} decryptedCache={decryptedCache} />
+            </BlurFade>
+
+            <BlurFade delay={0.2}>
+                <SleepChart />
             </BlurFade>
 
             <div className="space-y-6">
@@ -137,11 +142,11 @@ export default function DiaryPage() {
                                         ) : (
                                             <div className="flex items-center gap-2 text-red-900 opacity-50 select-none blur-[2px] group-hover:blur-0 transition-all">
                                                 <ShieldCheck className="w-4 h-4" />
-                                                ENCRYPTED CONTENT // CLICK TO DECRYPT
+                                                {t('diary.encrypted')}
                                             </div>
                                         )
                                     ) : (
-                                        log.note || <span className="text-neutral-600 italic">No introspection recorded.</span>
+                                        log.note || <span className="text-neutral-600 italic">{t('diary.no_notes')}</span>
                                     )}
                                 </div>
                             </div>

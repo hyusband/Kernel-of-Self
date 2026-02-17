@@ -39,4 +39,22 @@ async function trackSleep(req, res) {
     }
 }
 
-module.exports = { trackSleep };
+async function getSleepStats(req, res) {
+    try {
+        const userId = req.user.id;
+        const sleepHistory = await require('../services/state').getSleepHistory(userId);
+
+        // We can also fetch mood history to correlate, but let's start with just sleep logs
+        // The frontend can handle the correlation if we provide enough data
+
+        res.status(200).json({
+            success: true,
+            data: sleepHistory
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: "Database error" });
+    }
+}
+
+module.exports = { trackSleep, getSleepStats };
