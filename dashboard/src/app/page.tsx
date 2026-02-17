@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Hero } from '@/components/landing/hero';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
 import { MoodSlider } from '@/components/ui/mood-slider';
+import { BlurFade } from '@/components/ui/blur-fade';
 import { Activity, Wifi, WifiOff, ArrowRight, Brain, Terminal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -76,7 +77,9 @@ export default function Dashboard() {
 
         {/* Landing Hero */}
         <section className="relative">
-          <Hero />
+          <BlurFade delay={0.1}>
+            <Hero />
+          </BlurFade>
         </section>
 
         {/* Dashboard Interface */}
@@ -84,17 +87,17 @@ export default function Dashboard() {
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {/* Status Column */}
-            <div className="space-y-6">
+            <BlurFade delay={0.2} className="h-full space-y-6">
               <SpotlightCard className="p-8 h-full min-h-[300px] flex flex-col justify-between group">
                 <div>
                   <h2 className="text-sm font-mono text-neutral-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                     <Terminal className="w-4 h-4" /> System Status
                   </h2>
-                  <div className="text-6xl font-heading font-bold text-white tracking-tighter">
-                    {latestMood?.current_mood ? latestMood.current_mood : '--'}
-                    <span className="text-2xl text-neutral-600">/10</span>
+                  <div className="flex items-baseline gap-1 text-6xl font-heading font-bold text-white tracking-tighter leading-none my-4">
+                    <span>{latestMood?.current_mood ? latestMood.current_mood : '--'}</span>
+                    <span className="text-2xl text-neutral-600 font-normal tracking-normal">/10</span>
                   </div>
-                  <p className="mt-2 text-neutral-500">Current Resilience Index</p>
+                  <p className="text-sm text-neutral-500 font-mono">Current Resilience Index</p>
                 </div>
 
                 <div className="space-y-2">
@@ -107,9 +110,10 @@ export default function Dashboard() {
                   <p className="text-xs text-right text-neutral-600 font-mono group-hover:text-neutral-400 transition-colors">SYNC_ID: 0x{Date.now().toString(16).slice(-4)}</p>
                 </div>
               </SpotlightCard>
-            </div>
+            </BlurFade>
 
-            {/* Input Column */}\n              <div className="space-y-6">
+            {/* Input Column */}
+            <BlurFade delay={0.3} className="h-full space-y-6">
               <SpotlightCard className="p-8 space-y-8">
                 <div>
                   <h2 className="text-sm font-mono text-neutral-400 uppercase tracking-widest mb-6">Update State</h2>
@@ -140,7 +144,7 @@ export default function Dashboard() {
                   {!isSubmitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                 </button>
               </SpotlightCard>
-            </div>
+            </BlurFade>
 
           </div>
         </section>
