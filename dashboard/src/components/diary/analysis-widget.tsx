@@ -72,23 +72,51 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
     };
 
     return (
-        <div className="bg-neutral-900/30 border border-white/10 rounded-xl p-6 mb-8 relative overflow-hidden">
-            <div className="flex justify-between items-start mb-4">
+        <div className={cn(
+            "bg-neutral-900/30 border rounded-xl p-6 mb-8 relative overflow-hidden transition-all duration-500",
+            mode === 'truth' ? "border-red-900/30 shadow-[0_0_30px_-10px_rgba(220,38,38,0.2)]" : "border-white/10"
+        )}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                 <h3 className="text-xl font-heading font-bold flex items-center gap-2 text-white">
                     <BrainCircuit className="w-5 h-5 text-purple-400" />
                     {language === 'es' ? 'Análisis Cognitivo' : 'Cognitive Analysis'}
                 </h3>
-                <button
-                    onClick={handleAnalyze}
-                    disabled={isLoading}
-                    className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all",
-                        isLoading ? "bg-neutral-800 text-neutral-500" : "bg-purple-900/20 text-purple-400 hover:bg-purple-900/40 border border-purple-500/30"
-                    )}
-                >
-                    {isLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                    {language === 'es' ? 'ANALIZAR DATOS VISIBLES' : 'ANALYZE VISIBLE DATA'}
-                </button>
+
+                <div className="flex items-center gap-3">
+                    <div className="flex bg-neutral-900 rounded-lg p-1 border border-neutral-800">
+                        <button
+                            onClick={() => setMode('resilience')}
+                            className={cn(
+                                "px-3 py-1 rounded-md text-xs font-mono transition-all",
+                                mode === 'resilience' ? "bg-neutral-800 text-purple-400" : "text-neutral-500 hover:text-neutral-300"
+                            )}
+                        >
+                            {language === 'es' ? 'RESILIENCIA' : 'RESILIENCE'}
+                        </button>
+                        <button
+                            onClick={() => setMode('truth')}
+                            className={cn(
+                                "px-3 py-1 rounded-md text-xs font-mono transition-all",
+                                mode === 'truth' ? "bg-red-900/30 text-red-500" : "text-neutral-500 hover:text-neutral-300"
+                            )}
+                        >
+                            {language === 'es' ? 'DETECTOR DE MENTIRAS' : 'LIE DETECTOR'}
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={handleAnalyze}
+                        disabled={isLoading}
+                        className={cn(
+                            "flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all",
+                            isLoading ? "bg-neutral-800 text-neutral-500" : "bg-purple-900/20 text-purple-400 hover:bg-purple-900/40 border border-purple-500/30",
+                            mode === 'truth' && !isLoading && "bg-red-900/20 text-red-500 border-red-500/30 hover:bg-red-900/40"
+                        )}
+                    >
+                        {isLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {language === 'es' ? 'ANALIZAR' : 'ANALYZE'}
+                    </button>
+                </div>
             </div>
 
             {analysis && (
