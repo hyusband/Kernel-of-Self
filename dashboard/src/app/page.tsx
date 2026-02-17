@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
-import { cn } from '@/lib/utils';
-import { Terminal, Activity, Moon, Send, Wifi, WifiOff } from 'lucide-react';
+import { Hero } from '@/components/landing/hero';
+import { SpotlightCard } from '@/components/ui/spotlight-card';
+import { MoodSlider } from '@/components/ui/mood-slider';
+import { Activity, Wifi, WifiOff, ArrowRight, Brain, Terminal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
@@ -15,17 +17,14 @@ export default function Dashboard() {
   const [isOffline, setIsOffline] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: latestMood, error } = useSWR('/api/mood', fetcher);
+  const { data: latestMood } = useSWR('/api/mood', fetcher);
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
-
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-
     setIsOffline(!navigator.onLine);
-
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -39,7 +38,7 @@ export default function Dashboard() {
         const pending = JSON.parse(localStorage.getItem('pending_logs') || '[]');
         pending.push({ score: mood, note, timestamp: Date.now() });
         localStorage.setItem('pending_logs', JSON.stringify(pending));
-        alert('Saved offline. Will sync when online.');
+        alert('Queued for sync.');
         setNote('');
       } else {
         await axios.post('/api/mood', { score: mood, note });
@@ -47,97 +46,107 @@ export default function Dashboard() {
         setNote('');
       }
     } catch (err) {
-      console.error('Failed to submit mood', err);
-      alert('Failed to log mood.');
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto p-6 space-y-8">
+    <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black overflow-x-hidden">
 
-      {/* Header */}
-      <header className="flex justify-between items-center border-b border-border pb-4">
-        <div className="flex items-center space-x-2">
-          <Terminal className="w-6 h-6 text-primary" />
-          <h1 className="text-xl font-bold tracking-tighter">KERNEL_OF_SELF</h1>
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-6 lg:px-12 transition-all duration-300">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-neutral-800 to-neutral-600 flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-black transition-colors duration-300">
+            <Brain className="w-4 h-4 text-white group-hover:text-black transition-colors duration-300" />
+          </div>
+          <span className="font-heading font-bold text-lg tracking-tight group-hover:text-neutral-300 transition-colors">Kernel</span>
         </div>
-        <div className="flex items-center space-x-2 text-xs">
-          {isOffline ? (
-            <span className="flex items-center text-destructive">
-              <WifiOff className="w-4 h-4 mr-1" /> OFFLINE
-            </span>
-          ) : (
-            <span className="flex items-center text-primary">
-              <Wifi className="w-4 h-4 mr-1" /> CONNECTED
-            </span>
+        <div className="flex gap-4 items-center">
+          {isOffline && (
+            <span className="text-xs font-mono text-red-500 border border-red-900/50 bg-red-950/20 px-2 py-1 rounded animate-pulse">OFFLINE</span>
           )}
+          <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]" />
         </div>
-      </header>
+      </nav>
 
-      {/* Main Input Section */}
-      <main className="flex-1 space-y-8">
+      {/* Hybrid Layout */}
+      <main className="pt-16">
 
-        {/* Mood Dial */}
-        <section className="space-y-4">
-          <label className="block text-sm font-medium text-muted-foreground uppercase tracking-widest">
-            Current State (1-10)
-          </label>
-          <div className="relative flex items-center justify-center p-8 bg-card rounded-xl border border-border shadow-[0_0_20px_rgba(0,255,0,0.1)]">
-            <motion.div
-              key={mood}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-6xl font-black text-primary"
-            >
-              {mood}
-            </motion.div>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={mood}
-              onChange={(e) => setMood(parseInt(e.target.value))}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-          </div>
-          <div className="flex justify-between text-xs text-muted-foreground px-2">
-            <span>DYSTOPIAN</span>
-            <span>NEUTRAL</span>
-            <span>UTOPIAN</span>
-          </div>
+        {/* Landing Hero */}
+        <section className="relative">
+          <Hero />
         </section>
 
-        {/* Note Input */}
-        <section className="space-y-4">
-          <label className="block text-sm font-medium text-muted-foreground uppercase tracking-widest">
-            Log Entry (Optional)
-          </label>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Analizar estado del sistema..."
-            className="w-full h-32 bg-card border border-border rounded-lg p-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none placeholder:text-muted"
-          />
-        </section>
+        {/* Dashboard Interface */}
+        <section className="relative z-20 -mt-20 pb-20 px-4">
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Submit Action */}
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="w-full flex items-center justify-center space-x-2 bg-primary text-black font-bold py-4 rounded-lg hover:bg-opacity-90 active:scale-95 transition-all text-lg uppercase tracking-wider"
-        >
-          {isSubmitting ? <Activity className="animate-spin" /> : <Send />}
-          <span>{isOffline ? 'Log Offline' : 'Commit to Core'}</span>
-        </button>
+            {/* Status Column */}
+            <div className="space-y-6">
+              <SpotlightCard className="p-8 h-full min-h-[300px] flex flex-col justify-between group">
+                <div>
+                  <h2 className="text-sm font-mono text-neutral-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <Terminal className="w-4 h-4" /> System Status
+                  </h2>
+                  <div className="text-6xl font-heading font-bold text-white tracking-tighter">
+                    {latestMood?.current_mood ? latestMood.current_mood : '--'}
+                    <span className="text-2xl text-neutral-600">/10</span>
+                  </div>
+                  <p className="mt-2 text-neutral-500">Current Resilience Index</p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="h-1 w-full bg-neutral-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-white transition-all duration-1000 ease-out"
+                      style={{ width: `${(latestMood?.current_mood || 0) * 10}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-right text-neutral-600 font-mono group-hover:text-neutral-400 transition-colors">SYNC_ID: 0x{Date.now().toString(16).slice(-4)}</p>
+                </div>
+              </SpotlightCard>
+            </div>
+
+            {/* Input Column */}\n              <div className="space-y-6">
+              <SpotlightCard className="p-8 space-y-8">
+                <div>
+                  <h2 className="text-sm font-mono text-neutral-400 uppercase tracking-widest mb-6">Update State</h2>
+                  <MoodSlider value={mood} onChange={setMood} />
+                  <div className="flex justify-between text-xs text-neutral-600 mt-2 font-mono px-2">
+                    <span>CRIT</span>
+                    <span>STABLE</span>
+                    <span>PEAK</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Log system anomalies or thoughts..."
+                    className="w-full bg-neutral-950/50 border border-neutral-800 rounded-lg p-4 text-sm text-white placeholder:text-neutral-700 focus:outline-none focus:border-neutral-600 focus:ring-1 focus:ring-neutral-600 transition-all resize-none h-32 leading-relaxed"
+                  />
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="group w-full h-12 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 active:scale-[0.99] transition-all flex items-center justify-center gap-2 overflow-hidden relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  {isSubmitting ? <Activity className="w-4 h-4 animate-spin" /> : <span>Commit Log</span>}
+                  {!isSubmitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                </button>
+              </SpotlightCard>
+            </div>
+
+          </div>
+        </section>
 
       </main>
 
-      {/* Footer / Status */}
-      <footer className="text-center text-xs text-muted-foreground pt-8">
-        <p>SYSTEM STATUS: {latestMood?.current_mood ? `LAST RECORDED: ${latestMood.current_mood}/10` : 'WAITING FOR DATA...'}</p>
-      </footer>
     </div>
   );
 }
