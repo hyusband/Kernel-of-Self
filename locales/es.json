@@ -1,0 +1,25 @@
+{
+    "system": {
+        "active": "Kernel de Uno Mismo activo. Sistemas sincronizados.",
+        "listening": "Kernel de Uno Mismo escuchando en el puerto %s"
+    },
+    "mood": {
+        "missing_score": "Falta o es inválido el parámetro 'score' (1-10).",
+        "invalid_score": "El puntaje debe estar entre 1 y 10.",
+        "recovery": "Recibido. Modo de recuperación activado.",
+        "holding": "Recibido. Manteniendo el rumbo.",
+        "excellent": "Recibido. Excelente energía. A capitalizarla."
+    },
+    "wakeup": {
+        "sync_start": "Iniciando secuencia de sincronización...",
+        "context_mood": "Contextualizando para estado de ánimo: %s",
+        "generated": "Mensaje generado: %s",
+        "sent": "Notificación enviada.",
+        "success": "Sincronización completa.",
+        "failed": "Sincronización fallida: %s"
+    },
+    "ai": {
+        "error_gen": "Error de sincronización del sistema. Reinicia tu mentalidad.",
+        "error_panic": "Kernel Panic: No se pudo generar la intuición."
+    }
+}

@@ -1,16 +1,18 @@
 const express = require('express');
 const apiRoutes = require('./routes/api');
 const { requestLogger } = require('./middleware/logger');
+const i18n = require('./config/i18n');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(i18n.init);
 app.use(requestLogger);
 
 app.get('/', (req, res) => {
-    res.send('Kernel of Self activo. Sistemas sincronizados. / Kernel of Self is active. Systems synchronized.');
+    res.send(res.__('system.active'));
 });
 
 app.use('/api', apiRoutes);

@@ -6,7 +6,7 @@ async function updateMood(req, res) {
     if (!score || isNaN(score)) {
         return res.status(400).json({
             success: false,
-            message: "Missing or invalid 'score' parameter (1-10). / Falta o es inválido el parámetro 'score' (1-10)."
+            message: res.__('mood.missing_score')
         });
     }
 
@@ -14,16 +14,16 @@ async function updateMood(req, res) {
     if (numScore < 1 || numScore > 10) {
         return res.status(400).json({
             success: false,
-            message: "Score must be between 1 and 10. / El puntaje debe estar entre 1 y 10."
+            message: res.__('mood.invalid_score')
         });
     }
 
     setMood(numScore);
 
     let feedback = "";
-    if (numScore <= 4) feedback = "Recibido. Modo de recuperación activado. / Received. Recovery mode activated.";
-    else if (numScore <= 7) feedback = "Recibido. Manteniendo el rumbo. / Received. Holding course.";
-    else feedback = "Recibido. Excelente energía. A capitalizarla. / Received. Excellent energy. Capitalize on it.";
+    if (numScore <= 4) feedback = res.__('mood.recovery');
+    else if (numScore <= 7) feedback = res.__('mood.holding');
+    else feedback = res.__('mood.excellent');
 
     res.status(200).json({
         success: true,

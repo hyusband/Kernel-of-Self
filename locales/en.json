@@ -1,0 +1,25 @@
+{
+    "system": {
+        "active": "Kernel of Self is active. Systems synchronized.",
+        "listening": "Kernel of Self listening on port %s"
+    },
+    "mood": {
+        "missing_score": "Missing or invalid 'score' parameter (1-10).",
+        "invalid_score": "Score must be between 1 and 10.",
+        "recovery": "Received. Recovery mode activated.",
+        "holding": "Received. Holding course.",
+        "excellent": "Received. Excellent energy. Capitalize on it."
+    },
+    "wakeup": {
+        "sync_start": "Initiating synchronization sequence...",
+        "context_mood": "Contextualizing for mood: %s",
+        "generated": "Generated message: %s",
+        "sent": "Notification sent.",
+        "success": "Synchronization complete.",
+        "failed": "Synchronization failed: %s"
+    },
+    "ai": {
+        "error_gen": "System synchronization error. Reboot your mindset.",
+        "error_panic": "Kernel Panic: Unable to generate insight."
+    }
+}
