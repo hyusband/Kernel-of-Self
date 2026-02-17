@@ -26,6 +26,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
     const { t, language } = useLanguage();
     const [analysis, setAnalysis] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [mode, setMode] = useState<'resilience' | 'truth'>('resilience');
 
     const handleAnalyze = async () => {
         if (!token) return;
