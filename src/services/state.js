@@ -30,11 +30,45 @@ async function getMood() {
             return rows[0];
         }
 
-        return { score: null }; 
+        return { score: null };
     } catch (error) {
         console.error('[DB] Error getting mood:', error);
         return { score: null };
     }
 }
 
-module.exports = { setMood, getMood };
+// Ahora registro si dormi bien ( no lo registrare llevo sin dormir bien 2 meses )
+
+async function logSleep(duration, quality) {
+    try {
+        const result = await sql`
+            INSERT INTO sleep_logs (duration, quality) 
+            VALUES (${duration}, ${quality})
+        `;
+        console.log(`[DB] Sleep logged: ${duration}h / Quality: ${quality}`);
+        return result;
+    } catch (error) {
+        console.error('[DB] Error logging sleep:', error);
+        throw error;
+    }
+}
+
+async function getLatestSleep() {
+    try {
+        const { rows } = await sql`
+            SELECT * FROM sleep_logs 
+            ORDER BY created_at DESC 
+            LIMIT 1
+        `;
+
+        if (rows.length > 0) {
+            return rows[0];
+        }
+        return null;
+    } catch (error) {
+        console.error('[DB] Error getting sleep:', error);
+        return null;
+    }
+}
+
+module.exports = { setMood, getMood, logSleep, getLatestSleep };

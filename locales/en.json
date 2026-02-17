@@ -21,5 +21,14 @@
     "ai": {
         "error_gen": "System synchronization error. Reboot your mindset.",
         "error_panic": "Kernel Panic: Unable to generate insight."
+    },
+    "sleep": {
+        "missing_params": "Missing 'hours' or 'quality' parameters.",
+        "invalid_quality": "Quality must be between 1 (Poor) and 5 (Excellent).",
+        "feedback": {
+            "neutral": "Sleep data logged.",
+            "good": "Optimal recharge detected. Systems primed.",
+            "bad": "Low battery detected. Priority: Recovery."
+        }
     }
 }

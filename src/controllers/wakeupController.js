@@ -1,6 +1,6 @@
 const { generateDailyMessage } = require('../services/ai');
 const { sendNotification } = require('../services/notification');
-const { getMood } = require('../services/state');
+const { getMood, getLatestSleep } = require('../services/state');
 
 async function triggerWakeup(req, res) {
     try {
@@ -9,7 +9,13 @@ async function triggerWakeup(req, res) {
         const currentMood = await getMood();
         console.log(res.__('wakeup.context_mood', currentMood.score ? currentMood.score : 'Neutral'));
 
-        const message = await generateDailyMessage(currentMood.score ? currentMood : null);
+        const currentSleep = await getLatestSleep();
+        if (currentSleep) console.log(`Sleep Context: ${currentSleep.duration}h (Q: ${currentSleep.quality})`);
+
+        const message = await generateDailyMessage(
+            currentMood.score ? currentMood : null,
+            currentSleep
+        );
         console.log(res.__('wakeup.generated', message));
 
         await sendNotification(message);

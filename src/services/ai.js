@@ -5,14 +5,20 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
-async function generateDailyMessage(mood = null) {
+async function generateDailyMessage(mood = null, sleep = null) {
     let systemPrompt = "Eres el 'Kernel de Uno Mismo' (Kernel of Self). Tu objetivo es proporcionar frases de resiliencia breves e impactantes o recordatorios filosóficos. Genera el mensaje en ESPAÑOL e INGLÉS. Formato: 'Texto en Español. / Text in English.' Manténlo bajo 280 caracteres en total. Sé directo, estoico y motivador.";
 
     if (mood) {
         systemPrompt += ` El usuario reportó un estado de ánimo de ${mood.score}/10. `;
-        if (mood.score <= 4) systemPrompt += "El ánimo es bajo. Sé empático, validador pero firme en la reconstrucción. Recuérdale su capacidad de superar esto.";
-        else if (mood.score <= 7) systemPrompt += "El ánimo es neutral/estable. Sé estoico y disciplinado. Enfatiza la constancia.";
-        else systemPrompt += "El ánimo es alto. Sé desafiante. Empújalo a lograr más, a no conformarse.";
+        if (mood.score <= 4) systemPrompt += "El ánimo es bajo. Sé empático, validador pero firme en la reconstrucción.";
+        else if (mood.score <= 7) systemPrompt += "El ánimo es neutral. Sé estoico y disciplinado.";
+        else systemPrompt += "El ánimo es alto. Sé desafiante. Empújalo a lograr más.";
+    }
+
+    if (sleep) {
+        systemPrompt += ` El usuario durmió ${sleep.duration} horas con calidad ${sleep.quality}/5. `;
+        if (sleep.quality <= 2 || sleep.duration < 6) systemPrompt += "Hay fatiga física. Sugiere descanso estratégico o enfoque pasivo. No exijas demasiado físicamente.";
+        else if (sleep.quality >= 4) systemPrompt += "La batería está cargada. Exige alto rendimiento cognitivo y físico.";
     }
 
     try {

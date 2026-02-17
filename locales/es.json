@@ -21,5 +21,14 @@
     "ai": {
         "error_gen": "Error de sincronización del sistema. Reinicia tu mentalidad.",
         "error_panic": "Kernel Panic: No se pudo generar la intuición."
+    },
+    "sleep": {
+        "missing_params": "Faltan los parámetros 'hours' o 'quality'.",
+        "invalid_quality": "La calidad debe estar entre 1 (Pobre) y 5 (Excelente).",
+        "feedback": {
+            "neutral": "Datos de sueño registrados.",
+            "good": "Recarga óptima detectada. Sistemas listos.",
+            "bad": "Batería baja detectada. Prioridad: Recuperación."
+        }
     }
 }
