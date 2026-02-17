@@ -30,5 +30,12 @@ export default {
         sleep_logged: 'Sleep log saved. / Registro de sueño guardado.',
         mood_logged: 'Mood log saved. / Registro de estado de ánimo guardado.',
         challenge_pending: 'Daily challenge: {challenge} / Reto diario: {challenge}',
+    },
+    oracle: {
+        title: "THE ORACLE",
+        greeting: "Greetings. I am the Oracle. I hold the memory of your past selves. What do you seek?",
+        placeholder: "Consult your archives...",
+        error: "Connection severed. My memory banks are unreachable.",
+        loading: "Accessing neural pathways...",
     }
 };

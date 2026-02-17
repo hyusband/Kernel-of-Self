@@ -1,6 +1,18 @@
-const { setMood } = require('../services/state');
+const { setMood, getMood: fetchMoodHeader } = require('../services/state');
+
+async function getMood(req, res) {
+    try {
+        const mood = await fetchMoodHeader();
+        res.json(mood || { score: null });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Failed to fetch mood" });
+    }
+}
 
 async function updateMood(req, res) {
+    console.log('[DEBUG] Mood Request Headers:', req.headers);
+    console.log('[DEBUG] Mood Request Body:', req.body);
     const body = req.body || {};
     const score = body.score || req.query.score;
     const note = body.note || req.query.note;
@@ -20,7 +32,8 @@ async function updateMood(req, res) {
         });
     }
 
-    await setMood(numScore, note);
+    const isEncrypted = body.is_encrypted || false;
+    await setMood(numScore, note, isEncrypted);
 
     let feedback = "";
     if (numScore <= 4) feedback = res.__('mood.recovery');
@@ -34,4 +47,4 @@ async function updateMood(req, res) {
     });
 }
 
-module.exports = { updateMood };
+module.exports = { updateMood, getMood };

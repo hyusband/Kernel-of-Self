@@ -4,15 +4,31 @@ require('dotenv').config();
 const { encrypt } = require('../utils/crypto');
 const { generateEmbedding } = require('./oracle');
 
-async function setMood(score, note = null) {
-    try {
-        const encryptedNote = note ? encrypt(note) : null;
+/*
+La ia hizo mal su propia function
+*/
 
-        // Generate embedding for "public" notes (not encrypted ones, or decrypt first?)
-        // If note is encrypted client-side (Vault), we can't embed it server-side.
-        // For standard logs (plaintext note), we embed it.
+
+async function setMood(score, note = null, isEncrypted = false) {
+    try {
+        // If isEncrypted is true, note IS the ciphertext. Don't re-encrypt.
+        // If isEncrypted is false, we encrypt it (if we had server-side encryption, but here we don't for standard logs?)
+        // Wait, the original code: const encryptedNote = note ? encrypt(note) : null; 
+        // implies server-side encryption for ALL notes? 
+        // Let's check src/utils/crypto.js. 
+        // YES, standard logs ARE encrypted at rest by the server. 
+        // Vault logs are encrypted by Client.
+
+        let finalNote = note;
+        if (!isEncrypted && note) {
+            // Standard log: Encrypt at rest (Server key)
+            finalNote = encrypt(note);
+        }
+        // If isEncrypted is true (Vault), 'note' is already a ciphertext string (JSON or hex).
+
+        // Generate embedding ONLY for standard logs (isEncrypted = false)
         let embedding = null;
-        if (note && !note.startsWith('{"iv":')) {
+        if (note && !isEncrypted) {
             try {
                 const vector = await generateEmbedding(`Mood: ${score}. Note: ${note}`);
                 embedding = JSON.stringify(vector);
@@ -23,7 +39,7 @@ async function setMood(score, note = null) {
 
         const result = await sql`
             INSERT INTO moods (score, note, embedding) 
-            VALUES (${score}, ${encryptedNote}, ${embedding})
+            VALUES (${score}, ${finalNote}, ${embedding})
         `;
         console.log(`[DB] Mood set to ${score}. Encrypted note saved. Embedding generated: ${!!embedding}`);
         return result;

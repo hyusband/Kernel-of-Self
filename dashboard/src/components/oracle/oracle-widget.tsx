@@ -11,14 +11,21 @@ interface Message {
     content: string;
 }
 
+import { useLanguage } from '@/lib/i18n-context';
+
 export const OracleWidget = () => {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        { role: 'assistant', content: "Greetings. I am the Oracle. I hold the memory of your past selves. What do you seek?" }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (messages.length === 0) {
+            setMessages([{ role: 'assistant', content: t('oracle.greeting') }]);
+        }
+    }, [t, messages.length]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -45,7 +52,7 @@ export const OracleWidget = () => {
             const botMsg = { role: 'assistant' as const, content: res.data.reply };
             setMessages(prev => [...prev, botMsg]);
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: "Connection severed. My memory banks are unreachable." }]);
+            setMessages(prev => [...prev, { role: 'assistant', content: t('oracle.error') }]);
         } finally {
             setIsLoading(false);
         }
@@ -66,7 +73,7 @@ export const OracleWidget = () => {
                         <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
                             <div className="flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-purple-400" />
-                                <span className="font-heading font-bold text-white tracking-widest text-sm">THE ORACLE</span>
+                                <span className="font-heading font-bold text-white tracking-widest text-sm">{t('oracle.title')}</span>
                             </div>
                             <button onClick={() => setIsOpen(false)} className="text-neutral-400 hover:text-white transition-colors">
                                 <X className="w-4 h-4" />
@@ -100,6 +107,7 @@ export const OracleWidget = () => {
                                         <span className="w-1 h-1 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
                                         <span className="w-1 h-1 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
                                         <span className="w-1 h-1 bg-purple-400 rounded-full animate-bounce" />
+                                        <span className="ml-2 text-xs text-purple-300">{t('oracle.loading')}</span>
                                     </div>
                                 </div>
                             )}
@@ -112,7 +120,7 @@ export const OracleWidget = () => {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder="Consult your archives..."
+                                    placeholder={t('oracle.placeholder')}
                                     className="flex-1 bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-neutral-600"
                                 />
                                 <button

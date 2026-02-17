@@ -30,5 +30,12 @@ export default {
         sleep_logged: 'Registro de sueño guardado.',
         mood_logged: 'Registro de estado de ánimo guardado.',
         challenge_pending: 'Reto diario: {challenge}',
+    },
+    oracle: {
+        title: "EL ORÁCULO",
+        greeting: "Saludos. Soy el Oráculo. Guardo la memoria de tus yo pasados. ¿Qué buscas?",
+        placeholder: "Consulta tus archivos...",
+        error: "Conexión cortada. Mis bancos de memoria son inalcanzables.",
+        loading: "Accediendo a vías neuronales...",
     }
 };

@@ -10,13 +10,11 @@ const groq = new Groq({
 let extractor = null;
 
 /*
-  1 - Traducir el prompt tal cual como esta en el proyecto 
-  2 - Esto tiene que estar por usuario, actualmente el flujo es systempromt - systemHistory ( no tiene contexto real del historial del usuario, simplemente agarra un contexto global de la charla )
+  Esto tiene que estar por usuario, actualmente el flujo es systempromt - systemHistory ( no tiene contexto real del historial del usuario, simplemente agarra un contexto global de la charla )
 */
 
 async function getExtractor() {
     if (!extractor) {
-        // usamos un modelo peque;o para generar embeddings
         extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
     }
     return extractor;
@@ -64,6 +62,7 @@ async function chatWithOracle(message, history = []) {
             ${contextText}
 
             INSTRUCTIONS:
+            - **LANGUAGE DETECTION**: Identify if the user is speaking Spanish or English. Respond in the SAME language.
             - Answer the user's question based on patterns in the context.
             - If the context doesn't have the answer, use your general knowledge but mention you don't recall that specific detail.
             - Be philosophical, slightly cryptic but helpful. Tone: "Cyberpunk Stoic".
@@ -76,7 +75,7 @@ async function chatWithOracle(message, history = []) {
                 ...history,
                 { role: 'user', content: message }
             ],
-            model: 'llama3-70b-8192',
+            model: 'llama-3.3-70b-versatile',
             temperature: 0.7,
             max_tokens: 300,
         });
