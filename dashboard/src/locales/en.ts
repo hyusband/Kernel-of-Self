@@ -37,5 +37,8 @@ export default {
         placeholder: "Consult your archives...",
         error: "Connection severed. My memory banks are unreachable.",
         loading: "Accessing neural pathways...",
+    },
+    diary: {
+        title: "Neural Archives",
     }
 };

@@ -4,6 +4,7 @@ const { triggerWakeup } = require('../controllers/wakeupController');
 const { updateMood, getMood, getHistory } = require('../controllers/moodController');
 const { trackSleep } = require('../controllers/sleepController');
 const { chatWithOracle } = require('../services/oracle');
+const { analyzeEntries } = require('../controllers/analysisController');
 
 const { register, login } = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/auth');
@@ -16,6 +17,8 @@ router.get('/mood', authenticateToken, getMood);
 router.get('/history', authenticateToken, getHistory);
 router.post('/mood', authenticateToken, updateMood);
 router.get('/sleep', authenticateToken, trackSleep);
+
+router.post('/analyze', authenticateToken, analyzeEntries);
 
 router.post('/chat', authenticateToken, async (req, res) => {
     const { message, history } = req.body;

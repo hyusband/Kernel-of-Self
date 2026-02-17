@@ -37,5 +37,8 @@ export default {
         placeholder: "Consulta tus archivos...",
         error: "Conexión cortada. Mis bancos de memoria son inalcanzables.",
         loading: "Accediendo a vías neuronales...",
+    },
+    diary: {
+        title: "Archivos Neuronales",
     }
 };

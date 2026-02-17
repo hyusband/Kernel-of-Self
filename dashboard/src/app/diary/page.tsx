@@ -10,6 +10,8 @@ import { VaultModal } from '@/components/vault/vault-modal';
 import { Lock, Unlock, Calendar, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BlurFade } from '@/components/ui/blur-fade';
+import { MoodComposer } from '@/components/diary/mood-composer';
+import { AnalysisWidget } from '@/components/diary/analysis-widget';
 
 const fetcher = ([url, token]: [string, string]) =>
     axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
@@ -22,7 +24,7 @@ export default function DiaryPage() {
     const [selectedEncryptedLog, setSelectedEncryptedLog] = useState<any>(null);
     const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
 
-    const { data: history, error } = useSWR(token ? ['/api/history', token] : null, fetcher);
+    const { data: history, error, mutate } = useSWR(token ? ['/api/history', token] : null, fetcher);
 
     const handleUnlockRequest = (log: any) => {
         setSelectedEncryptedLog(log);
@@ -51,6 +53,10 @@ export default function DiaryPage() {
         }
     };
 
+    const handleCommit = () => {
+        mutate();
+    };
+
     if (error) return <div className="text-red-500 p-8">Failed to load history.</div>;
     if (!history) return <div className="text-white p-8">Loading diary...</div>;
 
@@ -70,6 +76,16 @@ export default function DiaryPage() {
                 </h1>
                 <p className="text-neutral-400">Chronological storage of cognitive states.</p>
             </header>
+
+            <div className="mb-12">
+                <BlurFade delay={0.1}>
+                    <MoodComposer onCommit={handleCommit} className="border-neutral-800" compact />
+                </BlurFade>
+            </div>
+
+            <BlurFade delay={0.15}>
+                <AnalysisWidget history={history} decryptedCache={decryptedCache} />
+            </BlurFade>
 
             <div className="space-y-6">
                 {history.map((log: any, idx: number) => {

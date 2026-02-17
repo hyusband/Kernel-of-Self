@@ -89,7 +89,26 @@ async function chatWithOracle(message, history = [], userId) {
     }
 }
 
+async function generateInsight(prompt) {
+    try {
+        const completion = await groq.chat.completions.create({
+            messages: [
+                { role: 'user', content: prompt }
+            ],
+            model: 'llama-3.3-70b-versatile',
+            temperature: 0.7,
+            max_tokens: 500,
+        });
+
+        return completion.choices[0]?.message?.content || "No insights available.";
+    } catch (error) {
+        console.error('Oracle Insight Error:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     generateEmbedding,
-    chatWithOracle
+    chatWithOracle,
+    generateInsight
 };
