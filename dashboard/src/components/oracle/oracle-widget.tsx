@@ -13,8 +13,11 @@ interface Message {
 
 import { useLanguage } from '@/lib/i18n-context';
 
+import { useAuth } from '@/context/auth-context';
+
 export const OracleWidget = () => {
     const { t } = useLanguage();
+    const { token } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
@@ -34,7 +37,7 @@ export const OracleWidget = () => {
     }, [messages, isOpen]);
 
     const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+        if (!input.trim() || isLoading || !token) return;
 
         const userMsg = { role: 'user' as const, content: input };
         setMessages(prev => [...prev, userMsg]);
@@ -47,6 +50,8 @@ export const OracleWidget = () => {
             const res = await axios.post('/api/chat', {
                 message: userMsg.content,
                 history: historyPayload
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
 
             const botMsg = { role: 'assistant' as const, content: res.data.reply };

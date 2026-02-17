@@ -9,24 +9,15 @@ La ia hizo mal su propia function
 */
 
 
-async function setMood(score, note = null, isEncrypted = false) {
+async function setMood(score, note = null, isEncrypted = false, userId) {
     try {
-        // If isEncrypted is true, note IS the ciphertext. Don't re-encrypt.
-        // If isEncrypted is false, we encrypt it (if we had server-side encryption, but here we don't for standard logs?)
-        // Wait, the original code: const encryptedNote = note ? encrypt(note) : null; 
-        // implies server-side encryption for ALL notes? 
-        // Let's check src/utils/crypto.js. 
-        // YES, standard logs ARE encrypted at rest by the server. 
-        // Vault logs are encrypted by Client.
+        // ... (encryption logic remains the same)
 
         let finalNote = note;
         if (!isEncrypted && note) {
-            // Standard log: Encrypt at rest (Server key)
             finalNote = encrypt(note);
         }
-        // If isEncrypted is true (Vault), 'note' is already a ciphertext string (JSON or hex).
 
-        // Generate embedding ONLY for standard logs (isEncrypted = false)
         let embedding = null;
         if (note && !isEncrypted) {
             try {
@@ -38,8 +29,8 @@ async function setMood(score, note = null, isEncrypted = false) {
         }
 
         const result = await sql`
-            INSERT INTO moods (score, note, embedding) 
-            VALUES (${score}, ${finalNote}, ${embedding})
+            INSERT INTO moods (score, note, embedding, user_id) 
+            VALUES (${score}, ${finalNote}, ${embedding}, ${userId})
         `;
         console.log(`[DB] Mood set to ${score}. Encrypted note saved. Embedding generated: ${!!embedding}`);
         return result;
@@ -52,10 +43,11 @@ async function setMood(score, note = null, isEncrypted = false) {
     }
 }
 
-async function getMood() {
+async function getMood(userId) {
     try {
         const { rows } = await sql`
             SELECT * FROM moods 
+            WHERE user_id = ${userId}
             ORDER BY created_at DESC 
             LIMIT 1
         `;
@@ -73,11 +65,11 @@ async function getMood() {
 
 // Ahora registro si dormi bien ( no lo registrare llevo sin dormir bien 2 meses )
 
-async function logSleep(duration, quality) {
+async function logSleep(duration, quality, userId) {
     try {
         const result = await sql`
-            INSERT INTO sleep_logs (duration, quality) 
-            VALUES (${duration}, ${quality})
+            INSERT INTO sleep_logs (duration, quality, user_id) 
+            VALUES (${duration}, ${quality}, ${userId})
         `;
         console.log(`[DB] Sleep logged: ${duration}h / Quality: ${quality}`);
         return result;
@@ -87,10 +79,11 @@ async function logSleep(duration, quality) {
     }
 }
 
-async function getLatestSleep() {
+async function getLatestSleep(userId) {
     try {
         const { rows } = await sql`
             SELECT * FROM sleep_logs 
+            WHERE user_id = ${userId}
             ORDER BY created_at DESC 
             LIMIT 1
         `;

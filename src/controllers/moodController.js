@@ -2,7 +2,8 @@ const { setMood, getMood: fetchMoodHeader } = require('../services/state');
 
 async function getMood(req, res) {
     try {
-        const mood = await fetchMoodHeader();
+        const userId = req.user.id;
+        const mood = await fetchMoodHeader(userId);
         res.json(mood || { score: null });
     } catch (e) {
         console.error(e);
@@ -33,7 +34,8 @@ async function updateMood(req, res) {
     }
 
     const isEncrypted = body.is_encrypted || false;
-    await setMood(numScore, note, isEncrypted);
+    const userId = req.user.id;
+    await setMood(numScore, note, isEncrypted, userId);
 
     let feedback = "";
     if (numScore <= 4) feedback = res.__('mood.recovery');

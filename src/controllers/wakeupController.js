@@ -6,10 +6,11 @@ async function triggerWakeup(req, res) {
     try {
         console.log(res.__('wakeup.sync_start'));
 
-        const currentMood = await getMood();
+        const userId = req.user.id;
+        const currentMood = await getMood(userId);
         console.log(res.__('wakeup.context_mood', currentMood.score ? currentMood.score : 'Neutral'));
 
-        const currentSleep = await getLatestSleep();
+        const currentSleep = await getLatestSleep(userId);
         if (currentSleep) console.log(`Sleep Context: ${currentSleep.duration}h (Q: ${currentSleep.quality})`);
 
         const message = await generateDailyMessage(

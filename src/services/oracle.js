@@ -10,7 +10,7 @@ const groq = new Groq({
 let extractor = null;
 
 /*
-  Esto tiene que estar por usuario, actualmente el flujo es systempromt - systemHistory ( no tiene contexto real del historial del usuario, simplemente agarra un contexto global de la charla )
+  Ahora ya tiene contexto por usuario/historial
 */
 
 async function getExtractor() {
@@ -26,14 +26,14 @@ async function generateEmbedding(text) {
     return Array.from(output.data);
 }
 
-async function findSimilarLogs(embedding) {
+async function findSimilarLogs(embedding, userId) {
     try {
         const vectorString = JSON.stringify(embedding);
         const { rows } = await sql`
             SELECT id, score, note, created_at, 
             1 - (embedding <=> ${vectorString}) as similarity
             FROM moods
-            WHERE embedding IS NOT NULL
+            WHERE embedding IS NOT NULL AND user_id = ${userId}
             ORDER BY embedding <=> ${vectorString}
             LIMIT 5;
         `;
@@ -44,11 +44,11 @@ async function findSimilarLogs(embedding) {
     }
 }
 
-async function chatWithOracle(message, history = []) {
+async function chatWithOracle(message, history = [], userId) {
     try {
         const queryEmbedding = await generateEmbedding(message);
 
-        const relevantLogs = await findSimilarLogs(queryEmbedding);
+        const relevantLogs = await findSimilarLogs(queryEmbedding, userId);
 
         const contextText = relevantLogs.map(log =>
             `[${new Date(log.created_at).toLocaleDateString()}] Mood: ${log.score}/10. Note: "${log.note}"`

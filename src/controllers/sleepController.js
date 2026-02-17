@@ -21,7 +21,8 @@ async function trackSleep(req, res) {
     }
 
     try {
-        await logSleep(numHours, numQuality);
+        const userId = req.user.id;
+        await logSleep(numHours, numQuality, userId);
 
         let feedback = res.__('sleep.feedback.neutral');
         if (numQuality >= 4) feedback = res.__('sleep.feedback.good');

@@ -14,11 +14,17 @@ import { VaultModal } from '@/components/vault/vault-modal';
 import { cn } from '@/lib/utils';
 import { OracleWidget } from '@/components/oracle/oracle-widget';
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/auth-context';
+
+const fetcher = ([url, token]: [string, string]) =>
+  axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
 
 export default function Dashboard() {
   const { t, language, setLanguage } = useLanguage();
   const { isUnlocked, unlock, lock, encrypt } = useVault();
+  const { user, token, isLoading } = useAuth();
+  const router = useRouter();
 
   const [mood, setMood] = useState(5);
   const [note, setNote] = useState('');
@@ -26,7 +32,13 @@ export default function Dashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVaultModalOpen, setIsVaultModalOpen] = useState(false);
 
-  const { data: latestMood } = useSWR('/api/mood', fetcher);
+  const { data: latestMood } = useSWR(token ? ['/api/mood', token] : null, fetcher);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isLoading, router]);
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -60,6 +72,7 @@ export default function Dashboard() {
   };
 
   const handleSubmit = async () => {
+    if (!token) return;
     setIsSubmitting(true);
     try {
       let payload: any = { score: mood, note };
@@ -82,8 +95,10 @@ export default function Dashboard() {
         alert(t('input.syncq'));
         setNote('');
       } else {
-        await axios.post('/api/mood', payload);
-        mutate('/api/mood');
+        await axios.post('/api/mood', payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        mutate(['/api/mood', token]);
         setNote('');
       }
     } catch (err) {
@@ -93,6 +108,8 @@ export default function Dashboard() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading || !user) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading interface...</div>;
 
   return (
     <div className={cn(

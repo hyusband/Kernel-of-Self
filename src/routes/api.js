@@ -5,17 +5,25 @@ const { updateMood, getMood } = require('../controllers/moodController');
 const { trackSleep } = require('../controllers/sleepController');
 const { chatWithOracle } = require('../services/oracle');
 
-router.get('/wakeup', triggerWakeup);
-router.get('/mood', getMood);
-router.post('/mood', updateMood);
-router.get('/sleep', trackSleep);
+const { register, login } = require('../controllers/authController');
+const { authenticateToken } = require('../middleware/auth');
 
-router.post('/chat', async (req, res) => {
+router.post('/auth/register', register);
+router.post('/auth/login', login);
+
+router.get('/wakeup', authenticateToken, triggerWakeup);
+router.get('/mood', authenticateToken, getMood);
+router.post('/mood', authenticateToken, updateMood);
+router.get('/sleep', authenticateToken, trackSleep);
+
+router.post('/chat', authenticateToken, async (req, res) => {
     const { message, history } = req.body;
+    const userId = req.user.id;
+
     if (!message) return res.status(400).json({ error: "Message required" });
 
     try {
-        const reply = await chatWithOracle(message, history);
+        const reply = await chatWithOracle(message, history, userId);
         res.json({ reply });
     } catch (error) {
         console.error(error);
