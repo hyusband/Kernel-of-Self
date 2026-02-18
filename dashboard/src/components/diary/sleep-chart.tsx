@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { useAuth } from '@/context/auth-context';
 import { useLanguage } from '@/lib/i18n-context';
 import {
@@ -36,7 +36,7 @@ export function SleepChart() {
         const fetchStats = async () => {
             if (!token) return;
             try {
-                const res = await axios.get('/api/sleep/stats', {
+                const res = await api.get('/api/sleep/stats', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setData(res.data.data);

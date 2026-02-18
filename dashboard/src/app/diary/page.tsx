@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import useSWR from 'swr';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { useAuth } from '@/context/auth-context';
 import { useVault } from '@/hooks/use-vault';
 import { useLanguage } from '@/lib/i18n-context';
@@ -15,7 +15,7 @@ import { AnalysisWidget } from '@/components/diary/analysis-widget';
 import { SleepChart } from '@/components/diary/sleep-chart';
 
 const fetcher = ([url, token]: [string, string]) =>
-    axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
+    api.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
 
 export default function DiaryPage() {
     const { token } = useAuth();

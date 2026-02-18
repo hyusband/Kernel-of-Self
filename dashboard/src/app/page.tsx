@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import useSWR, { mutate } from 'swr';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { Hero } from '@/components/landing/hero';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
 import { MoodComposer } from '@/components/diary/mood-composer';
@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 
 const fetcher = ([url, token]: [string, string]) =>
-  axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
+  api.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
 
 export default function Dashboard() {
   const { t, language, setLanguage } = useLanguage();

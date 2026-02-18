@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { useAuth } from '@/context/auth-context';
 import { useLanguage } from '@/lib/i18n-context';
 import { Sparkles, BrainCircuit, RefreshCw } from 'lucide-react';
@@ -55,7 +55,7 @@ export function AnalysisWidget({ history, decryptedCache }: AnalysisWidgetProps)
                 return;
             }
 
-            const res = await axios.post('/api/analyze', {
+            const res = await api.post('/api/analyze', {
                 entries,
                 locale: language
             }, {

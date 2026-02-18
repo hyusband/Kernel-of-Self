@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, X, Bot, User, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -47,7 +47,7 @@ export const OracleWidget = () => {
         try {
             const historyPayload = messages.map(m => ({ role: m.role, content: m.content }));
 
-            const res = await axios.post('/api/chat', {
+            const res = await api.post('/api/chat', {
                 message: userMsg.content,
                 history: historyPayload
             }, {

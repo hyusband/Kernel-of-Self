@@ -2,10 +2,20 @@ const express = require('express');
 const apiRoutes = require('./routes/api');
 const { requestLogger } = require('./middleware/logger');
 const i18n = require('./config/i18n');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        /\.vercel\.app$/
+    ],
+    credentials: true
+}));
 
 app.use(express.json());
 app.use(i18n.init);

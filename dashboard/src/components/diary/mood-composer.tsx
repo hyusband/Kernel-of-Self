@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
 import { MoodSlider } from '@/components/ui/mood-slider';
 import { Activity, ArrowRight, Lock, Unlock, ShieldCheck } from 'lucide-react';
@@ -79,7 +79,7 @@ export function MoodComposer({ onCommit, className, compact = false }: MoodCompo
                 alert(t('input.syncq'));
                 setNote('');
             } else {
-                await axios.post('/api/mood', payload, {
+                await api.post('/api/mood', payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setNote('');
