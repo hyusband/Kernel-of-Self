@@ -137,11 +137,11 @@ export default function DiaryPage() {
                 <div className="lg:col-span-8 space-y-8">
 
                     {/* Analytics Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <BlurFade delay={0.15} className="h-full">
+                    <div className="space-y-6">
+                        <BlurFade delay={0.15} className="w-full">
                             <AnalysisWidget history={history} decryptedCache={decryptedCache} />
                         </BlurFade>
-                        <BlurFade delay={0.2} className="h-full">
+                        <BlurFade delay={0.2} className="w-full">
                             <SleepChart />
                         </BlurFade>
                     </div>
