@@ -1,5 +1,4 @@
 const { Groq } = require('groq-sdk');
-const { pipeline } = require('@xenova/transformers');
 const { sql } = require('@vercel/postgres');
 require('dotenv').config();
 
@@ -16,6 +15,7 @@ let extractor = null;
 
 async function getExtractor() {
     if (!extractor) {
+        const { pipeline } = await import('@xenova/transformers');
         extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
     }
     return extractor;
