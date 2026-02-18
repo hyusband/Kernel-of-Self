@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/context/auth-context';
+import api from '@/lib/axios';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -17,21 +18,13 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Login failed');
-            }
+            const res = await api.post('/api/auth/login', { email, password });
+            const data = res.data;
 
             login(data.token, data.user);
         } catch (err: any) {
-            setError(err.message);
+            const message = err.response?.data?.error || err.message || 'Login failed';
+            setError(message);
         } finally {
             setLoading(false);
         }

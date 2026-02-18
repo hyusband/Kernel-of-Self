@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/context/auth-context';
+import api from '@/lib/axios';
 import Link from 'next/link';
 
 export default function RegisterPage() {
@@ -17,21 +18,13 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const res = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Registration failed');
-            }
+            const res = await api.post('/api/auth/register', { email, password });
+            const data = res.data;
 
             login(data.token, data.user);
         } catch (err: any) {
-            setError(err.message);
+            const message = err.response?.data?.error || err.message || 'Registration failed';
+            setError(message);
         } finally {
             setLoading(false);
         }
