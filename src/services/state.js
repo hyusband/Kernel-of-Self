@@ -19,10 +19,11 @@ async function setMood(score, note = null, isEncrypted = false, userId, iv = nul
         let embedding = null;
         if (note && !isEncrypted) {
             try {
-                const vector = await generateEmbedding(`Mood: ${score}. Note: ${note}`);
+                const vector = await generateEmbedding(`Mood Score: ${score}. Entry content: ${note}`);
                 embedding = JSON.stringify(vector);
             } catch (e) {
-                console.error('Embedding generation failed:', e);
+                console.error('Embedding generation failed (Oracle might be offline):', e);
+                embedding = null;
             }
         }
 

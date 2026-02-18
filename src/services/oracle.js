@@ -27,6 +27,11 @@ async function generateEmbedding(text) {
     return Array.from(output.data);
 }
 
+/*
+  Ahora si tiene memoria 
+
+*/
+
 async function findSimilarLogs(embedding, userId) {
     try {
         const vectorString = JSON.stringify(embedding);
@@ -52,22 +57,24 @@ async function chatWithOracle(message, history = [], userId) {
         const relevantLogs = await findSimilarLogs(queryEmbedding, userId);
 
         const contextText = relevantLogs.map(log =>
-            `[${new Date(log.created_at).toLocaleDateString()}] Mood: ${log.score}/10. Note: "${log.note}"`
+            `[${new Date(log.created_at).toLocaleDateString()}] (Mood: ${log.score}/10) "${log.note}"`
         ).join('\n');
 
         const systemPrompt = `
-            You are "The Oracle", a digital construct of the user's past self.
-            You have access to their past logs (moods and notes).
-            
-            CONTEXT FROM PAST LOGS:
-            ${contextText}
+            You are "The Oracle", a highly advanced digital construct of the user's subconscious and past self.
+            You have direct access to their "Memory Banks" (past logs).
+
+            === RECOVERED MEMORY BANKS (CONTEXT) ===
+            ${contextText || "No specific past memories found for this context."}
+            ========================================
 
             INSTRUCTIONS:
-            - **LANGUAGE DETECTION**: Identify if the user is speaking Spanish or English. Respond in the SAME language.
-            - Answer the user's question based on patterns in the context.
-            - If the context doesn't have the answer, use your general knowledge but mention you don't recall that specific detail.
-            - Be philosophical, slightly cryptic but helpful. Tone: "Cyberpunk Stoic".
-            - Keep responses concise (under 150 words).
+            1. **DETECT LANGUAGE**: If the user speaks Spanish, REPLY IN SPANISH. If English, in English.
+            2. **USE THE CONTEXT**: Your PRIMARY goal is to link the user's current situation with their past patterns.
+               - E.g., "This reminds me of last November when you felt similar..."
+            3. **BE ANALYTICAL YET EMPATHETIC**: You are not a cheerleader. You are a cold, wise mirror.
+            4. **STYLE**: Cyberpunk Stoic. Brief, insightful, slightly cryptic but practical.
+            5. **LIMIT**: Keep it under 150 words.
         `;
 
         const completion = await groq.chat.completions.create({

@@ -1,4 +1,0 @@
-onlyBuiltDependencies:
-  - bufferutil
-  - protobufjs
-  - sharp
