@@ -20,7 +20,6 @@ async function getExtractor() {
         const path = require('path');
         const os = require('os');
 
-        // Vercel serverless environments are read-only except for /tmp
         env.cacheDir = path.join(os.tmpdir(), '.cache');
 
         extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
