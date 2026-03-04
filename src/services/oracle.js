@@ -16,7 +16,13 @@ let extractor = null;
 
 async function getExtractor() {
     if (!extractor) {
-        const { pipeline } = await import('@xenova/transformers');
+        const { pipeline, env } = await import('@xenova/transformers');
+        const path = require('path');
+        const os = require('os');
+
+        // Vercel serverless environments are read-only except for /tmp
+        env.cacheDir = path.join(os.tmpdir(), '.cache');
+
         extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
     }
     return extractor;
