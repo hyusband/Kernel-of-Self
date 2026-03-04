@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const os = require('os');
+const upload = multer({ dest: os.tmpdir() });
 const { triggerWakeup } = require('../controllers/wakeupController');
 const { updateMood, getMood, getHistory } = require('../controllers/moodController');
 const { trackSleep, getSleepStats } = require('../controllers/sleepController');
 const { chatWithOracle } = require('../services/oracle');
 const { analyzeEntries } = require('../controllers/analysisController');
+const { handleVoiceJournal } = require('../controllers/voiceController');
 
 const { register, login } = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/auth');
@@ -20,6 +24,8 @@ router.get('/sleep', authenticateToken, trackSleep);
 router.get('/sleep/stats', authenticateToken, getSleepStats);
 
 router.post('/analyze', authenticateToken, analyzeEntries);
+
+router.post('/voice-journal', authenticateToken, upload.single('audio'), handleVoiceJournal);
 
 router.post('/chat', authenticateToken, async (req, res) => {
     const { message, history } = req.body;

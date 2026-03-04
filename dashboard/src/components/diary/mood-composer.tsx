@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/i18n-context';
 import { useVault } from '@/hooks/use-vault';
 import { useAuth } from '@/context/auth-context';
 import { VaultModal } from '@/components/vault/vault-modal';
+import { AudioRecorder } from '@/components/diary/audio-recorder';
 import { cn } from '@/lib/utils';
 
 interface MoodComposerProps {
@@ -157,23 +158,33 @@ export function MoodComposer({ onCommit, className, compact = false }: MoodCompo
                     )}
                 </div>
 
-                <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className={cn(
-                        "group w-full h-12 font-medium rounded-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2 overflow-hidden relative",
-                        isUnlocked
-                            ? "bg-red-600 text-white hover:bg-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)]"
-                            : "bg-white text-black hover:bg-neutral-200"
+                <div className="flex gap-2 items-center">
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className={cn(
+                            "group flex-grow h-12 font-medium rounded-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2 overflow-hidden relative",
+                            isUnlocked
+                                ? "bg-red-600 text-white hover:bg-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)]"
+                                : "bg-white text-black hover:bg-neutral-200"
+                        )}
+                    >
+                        <div className={cn(
+                            "absolute inset-0 bg-gradient-to-r from-transparent to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700",
+                            isUnlocked ? "via-red-400/50" : "via-white/50"
+                        )} />
+                        {isSubmitting ? <Activity className="w-4 h-4 animate-spin" /> : <span>{isUnlocked ? "SECURE COMMIT" : t('input.submit')}</span>}
+                        {!isSubmitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                    </button>
+                    {!isUnlocked && (
+                        <AudioRecorder
+                            isUnlocked={isUnlocked}
+                            onSuccess={() => {
+                                if (onCommit) onCommit();
+                            }}
+                        />
                     )}
-                >
-                    <div className={cn(
-                        "absolute inset-0 bg-gradient-to-r from-transparent to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700",
-                        isUnlocked ? "via-red-400/50" : "via-white/50"
-                    )} />
-                    {isSubmitting ? <Activity className="w-4 h-4 animate-spin" /> : <span>{isUnlocked ? "SECURE COMMIT" : t('input.submit')}</span>}
-                    {!isSubmitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-                </button>
+                </div>
             </SpotlightCard>
         </>
     );

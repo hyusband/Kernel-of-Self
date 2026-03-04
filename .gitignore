@@ -135,7 +135,7 @@ dist
 !.yarn/versions
 pnpm-lock.yaml
 
-
+.Neural
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*

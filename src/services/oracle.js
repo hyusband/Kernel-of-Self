@@ -1,5 +1,6 @@
 const { Groq } = require('groq-sdk');
 const { sql } = require('@vercel/postgres');
+const fs = require('fs');
 require('dotenv').config();
 
 const groq = new Groq({
@@ -114,8 +115,60 @@ async function generateInsight(prompt) {
     }
 }
 
+async function transcribeAudio(filePath) {
+    try {
+        const transcription = await groq.audio.transcriptions.create({
+            file: fs.createReadStream(filePath),
+            model: "whisper-large-v3",
+            response_format: "json"
+        });
+        return transcription.text;
+    } catch (error) {
+        console.error('Groq Transcription Error:', error);
+        throw error;
+    }
+}
+
+async function processVoiceText(text) {
+    const prompt = `
+        You are an intelligent assistant for a personal journal and logging tool. 
+        Your job is to process the following raw voice transcription.
+
+        1. **Refine**: Clean up the text. Remove filler words, fix grammar, make it concise and professional. Keep the original meaning and language.
+        2. **Classify**: Categorize it into one of:
+           - [TASK]: Actionable items, to-dos.
+           - [IDEA]: Business ideas, concepts.
+           - [LOG]: Personal thoughts, journaling.
+
+        Return the result in JSON format with two keys: "category" and "refined_text".
+
+        Raw Text: "${text}"
+    `;
+
+    try {
+        const completion = await groq.chat.completions.create({
+            messages: [
+                { role: 'system', content: 'You are a helpful assistant that outputs JSON.' },
+                { role: 'user', content: prompt }
+            ],
+            model: 'llama-3.3-70b-versatile',
+            response_format: { type: 'json_object' },
+            temperature: 0.3,
+            max_tokens: 1024,
+        });
+
+        const content = completion.choices[0]?.message?.content;
+        return JSON.parse(content);
+    } catch (error) {
+        console.error('Voice Processing Error:', error);
+        return { category: 'LOG', refined_text: text };
+    }
+}
+
 module.exports = {
     generateEmbedding,
     chatWithOracle,
-    generateInsight
+    generateInsight,
+    transcribeAudio,
+    processVoiceText
 };

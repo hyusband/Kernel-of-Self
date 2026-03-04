@@ -11,7 +11,7 @@ export async function deriveKey(password: string, salt: Uint8Array): Promise<Cry
     return window.crypto.subtle.deriveKey(
         {
             name: "PBKDF2",
-            salt: salt,
+            salt: salt as BufferSource,
             iterations: 100000,
             hash: "SHA-256",
         },
@@ -36,8 +36,8 @@ export async function encryptData(text: string, password: string): Promise<{ cip
 
     return {
         cipher: bufferToHex(encrypted),
-        iv: bufferToHex(iv),
-        salt: bufferToHex(salt),
+        iv: bufferToHex(iv.buffer as ArrayBuffer),
+        salt: bufferToHex(salt.buffer as ArrayBuffer),
     };
 }
 
@@ -49,15 +49,15 @@ export async function decryptData(cipherHex: string, ivHex: string, saltHex: str
 
     const key = await deriveKey(password, salt);
     const decrypted = await window.crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
+        { name: "AES-GCM", iv: iv as BufferSource },
         key,
-        cipher
+        cipher as BufferSource
     );
 
     return enc.decode(decrypted);
 }
 
-function bufferToHex(buffer: ArrayBuffer): string {
+function bufferToHex(buffer: ArrayBuffer | ArrayBufferLike): string {
     return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
