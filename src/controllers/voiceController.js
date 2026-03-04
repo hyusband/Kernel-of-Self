@@ -9,7 +9,11 @@ async function handleVoiceJournal(req, res) {
         }
 
         const userId = req.user.id;
-        const filePath = req.file.path;
+        let filePath = req.file.path;
+
+        const newFilePath = `${filePath}.webm`;
+        fs.renameSync(filePath, newFilePath);
+        filePath = newFilePath;
 
         const transcript = await transcribeAudio(filePath);
 
