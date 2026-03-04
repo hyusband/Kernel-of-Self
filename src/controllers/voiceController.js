@@ -30,7 +30,7 @@ async function handleVoiceJournal(req, res) {
         const isClientEncrypted = req.query.encrypt === 'true';
 
         if (!isClientEncrypted) {
-            await setMood(null, finalNote, false, userId);
+            await setMood(0, finalNote, false, userId);
         }
 
         fs.unlinkSync(filePath);

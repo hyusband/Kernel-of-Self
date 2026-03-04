@@ -80,7 +80,7 @@ export function AudioRecorder({ onSuccess, isUnlocked }: AudioRecorderProps) {
                     const encrypted = await encrypt(baseNote);
 
                     const payload = {
-                        score: null,
+                        score: 0,
                         note: encrypted.cipher,
                         iv: encrypted.iv,
                         salt: encrypted.salt,
