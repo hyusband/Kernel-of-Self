@@ -117,10 +117,12 @@ async function generateInsight(prompt) {
 
 async function transcribeAudio(filePath) {
     try {
+        const fileBuffer = fs.readFileSync(filePath);
+        // GROQ ES UNA MIERDA AAAAAAAAAAAAAAAAAAAAAAAAA
         const transcription = await groq.audio.transcriptions.create({
-            file: fs.createReadStream(filePath),
+            file: await Groq.toFile(fs.createReadStream(filePath), "recording.webm", { type: "audio/webm" }),
             model: "whisper-large-v3",
-            response_format: "json"
+            response_format: "json",
         });
         return transcription.text;
     } catch (error) {
